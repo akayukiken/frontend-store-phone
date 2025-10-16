@@ -114,8 +114,8 @@ useEffect(() => {
                 variants={FadeLeft(index * 0.1)}
                 initial="hidden"
                 animate="visible"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 1.05 }}
+                whileHover={!isDown.current ? { scale: 1.05 } : {}}
+  whileTap={!isDown.current ? { scale: 1.05 } : {}}
                 onClick={() => navigate(`/detail/${product._id}`)}
                 className={`min-w-[300px] p-4 rounded-xl shadow-md flex flex-col justify-between cursor-pointer
                   ${mode === "dark" ? "bg-gray-800" : "bg-[#f3f3f3]"}`}
