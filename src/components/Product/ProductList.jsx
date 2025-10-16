@@ -29,50 +29,53 @@ const ProductList = ({ mode }) => {
 
   // Fungsi scroll drag / touch (desktop & mobile)
   useEffect(() => {
-    const slider = scrollRef.current;
-    if (!slider) return;
+  const slider = scrollRef.current;
+  if (!slider) return;
 
-    const startDrag = (e) => {
-      isDown.current = true;
-      slider.classList.add("cursor-grabbing");
-      startX.current = e.pageX || e.touches[0].pageX;
-      scrollLeft.current = slider.scrollLeft;
-    };
+  const isTouching = { current: false };
+  const startX = { current: 0 };
+  const scrollLeft = { current: 0 };
 
-    const endDrag = () => {
-      isDown.current = false;
-      slider.classList.remove("cursor-grabbing");
-    };
+  const startDrag = (e) => {
+    isTouching.current = true;
+    slider.classList.add("cursor-grabbing");
+    startX.current = e.pageX ?? e.touches[0].pageX;
+    scrollLeft.current = slider.scrollLeft;
+  };
 
-    const moveDrag = (e) => {
-      if (!isDown.current) return;
-      e.preventDefault();
-      const x = e.pageX || e.touches[0].pageX;
-      const walk = (x - startX.current) * 1.5;
-      slider.scrollLeft = scrollLeft.current - walk;
-    };
+  const endDrag = () => {
+    isTouching.current = false;
+    slider.classList.remove("cursor-grabbing");
+  };
 
-    // Desktop
-    slider.addEventListener("mousedown", startDrag);
-    slider.addEventListener("mouseleave", endDrag);
-    slider.addEventListener("mouseup", endDrag);
-    slider.addEventListener("mousemove", moveDrag);
+  const moveDrag = (e) => {
+    if (!isTouching.current) return;
+    const x = e.pageX ?? e.touches[0].pageX;
+    const walk = (x - startX.current) * 1.5;
+    slider.scrollLeft = scrollLeft.current - walk;
+  };
 
-    // Mobile
-    slider.addEventListener("touchstart", startDrag);
-    slider.addEventListener("touchend", endDrag);
-    slider.addEventListener("touchmove", moveDrag);
+  // Desktop
+  slider.addEventListener("mousedown", startDrag);
+  slider.addEventListener("mouseleave", endDrag);
+  slider.addEventListener("mouseup", endDrag);
+  slider.addEventListener("mousemove", moveDrag);
 
-    return () => {
-      slider.removeEventListener("mousedown", startDrag);
-      slider.removeEventListener("mouseleave", endDrag);
-      slider.removeEventListener("mouseup", endDrag);
-      slider.removeEventListener("mousemove", moveDrag);
-      slider.removeEventListener("touchstart", startDrag);
-      slider.removeEventListener("touchend", endDrag);
-      slider.removeEventListener("touchmove", moveDrag);
-    };
-  }, []);
+  // Mobile
+  slider.addEventListener("touchstart", startDrag, { passive: true });
+  slider.addEventListener("touchend", endDrag);
+  slider.addEventListener("touchmove", moveDrag, { passive: false });
+
+  return () => {
+    slider.removeEventListener("mousedown", startDrag);
+    slider.removeEventListener("mouseleave", endDrag);
+    slider.removeEventListener("mouseup", endDrag);
+    slider.removeEventListener("mousemove", moveDrag);
+    slider.removeEventListener("touchstart", startDrag);
+    slider.removeEventListener("touchend", endDrag);
+    slider.removeEventListener("touchmove", moveDrag);
+  };
+}, []);
 
   const getLabel = (kondisi) => {
     if (kondisi?.toLowerCase() === "baru")
