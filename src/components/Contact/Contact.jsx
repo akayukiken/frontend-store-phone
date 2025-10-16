@@ -130,7 +130,7 @@ const Contact = () => {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="order-1 lg:order-2 bg-white dark:bg-gray-900 p-4 md:p-8 rounded-xl shadow-md w-full max-w-[420px] lg:max-w-lg ml-auto relative"
+            className="order-1 lg:order-2 bg-white dark:bg-gray-900 p-8 md:p-8 rounded-xl shadow-md w-full max-w-[420px] lg:max-w-lg ml-auto relative"
           >
             <h2 className="text-2xl font-semibold mb-6">Formulir Kontak</h2>
             <form
