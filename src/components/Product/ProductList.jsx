@@ -9,9 +9,61 @@ const ProductList = ({ mode }) => {
   const [productList, setProductList] = useState([]);
   const scrollRef = useRef(null);
   const navigate = useNavigate();
-  const isDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
+
+  // Hook drag scroll
+  const useDragScroll = (ref) => {
+    const isDragging = useRef(false);
+    const startX = useRef(0);
+    const scrollLeft = useRef(0);
+
+    useEffect(() => {
+      const slider = ref.current;
+      if (!slider) return;
+
+      const startDrag = (e) => {
+        isDragging.current = true;
+        slider.classList.add("cursor-grabbing");
+        startX.current = e.pageX ?? e.touches[0].pageX;
+        scrollLeft.current = slider.scrollLeft;
+      };
+
+      const endDrag = () => {
+        isDragging.current = false;
+        slider.classList.remove("cursor-grabbing");
+      };
+
+      const moveDrag = (e) => {
+        if (!isDragging.current) return;
+        e.preventDefault();
+        const x = e.pageX ?? e.touches[0].pageX;
+        const walk = (x - startX.current) * 1.5;
+        slider.scrollLeft = scrollLeft.current - walk;
+      };
+
+      // Desktop
+      slider.addEventListener("mousedown", startDrag);
+      slider.addEventListener("mouseup", endDrag);
+      slider.addEventListener("mouseleave", endDrag);
+      slider.addEventListener("mousemove", moveDrag);
+
+      // Mobile
+      slider.addEventListener("touchstart", startDrag, { passive: true });
+      slider.addEventListener("touchend", endDrag);
+      slider.addEventListener("touchmove", moveDrag, { passive: false });
+
+      return () => {
+        slider.removeEventListener("mousedown", startDrag);
+        slider.removeEventListener("mouseup", endDrag);
+        slider.removeEventListener("mouseleave", endDrag);
+        slider.removeEventListener("mousemove", moveDrag);
+        slider.removeEventListener("touchstart", startDrag);
+        slider.removeEventListener("touchend", endDrag);
+        slider.removeEventListener("touchmove", moveDrag);
+      };
+    }, [ref]);
+  };
+
+  useDragScroll(scrollRef);
 
   useEffect(() => {
     const fetchProductList = async () => {
@@ -26,56 +78,6 @@ const ProductList = ({ mode }) => {
     };
     fetchProductList();
   }, []);
-
-  // Fungsi scroll drag / touch (desktop & mobile)
-  useEffect(() => {
-  const slider = scrollRef.current;
-  if (!slider) return;
-
-  const isTouching = { current: false };
-  const startX = { current: 0 };
-  const scrollLeft = { current: 0 };
-
-  const startDrag = (e) => {
-    isTouching.current = true;
-    slider.classList.add("cursor-grabbing");
-    startX.current = e.pageX ?? e.touches[0].pageX;
-    scrollLeft.current = slider.scrollLeft;
-  };
-
-  const endDrag = () => {
-    isTouching.current = false;
-    slider.classList.remove("cursor-grabbing");
-  };
-
-  const moveDrag = (e) => {
-    if (!isTouching.current) return;
-    const x = e.pageX ?? e.touches[0].pageX;
-    const walk = (x - startX.current) * 1.5;
-    slider.scrollLeft = scrollLeft.current - walk;
-  };
-
-  // Desktop
-  slider.addEventListener("mousedown", startDrag);
-  slider.addEventListener("mouseleave", endDrag);
-  slider.addEventListener("mouseup", endDrag);
-  slider.addEventListener("mousemove", moveDrag);
-
-  // Mobile
-  slider.addEventListener("touchstart", startDrag, { passive: true });
-  slider.addEventListener("touchend", endDrag);
-  slider.addEventListener("touchmove", moveDrag, { passive: false });
-
-  return () => {
-    slider.removeEventListener("mousedown", startDrag);
-    slider.removeEventListener("mouseleave", endDrag);
-    slider.removeEventListener("mouseup", endDrag);
-    slider.removeEventListener("mousemove", moveDrag);
-    slider.removeEventListener("touchstart", startDrag);
-    slider.removeEventListener("touchend", endDrag);
-    slider.removeEventListener("touchmove", moveDrag);
-  };
-}, []);
 
   const getLabel = (kondisi) => {
     if (kondisi?.toLowerCase() === "baru")
@@ -99,7 +101,6 @@ const ProductList = ({ mode }) => {
     >
       <h2 className="text-2xl font-bold text-center mb-10">Product Store</h2>
 
-      {/* List produk */}
       <div
         ref={scrollRef}
         className="flex gap-6 overflow-x-auto scroll-smooth px-1 cursor-grab select-none scrollbar-hide"
