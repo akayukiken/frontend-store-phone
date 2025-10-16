@@ -73,6 +73,7 @@ const ProductList = ({ mode }) => {
 
   return (
     <div
+      id="ProductList"
       className={`relative max-w-8xl mx-auto py-24 px-4 transition-colors duration-300
         ${mode === "dark" ? "bg-gray-700 text-white" : "bg-white text-gray-900"}`}
     >
