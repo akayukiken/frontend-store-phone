@@ -3,7 +3,6 @@ import { Layout, Menu } from "antd";
 import {
   DashboardOutlined,
   SettingOutlined,
-  FundOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
