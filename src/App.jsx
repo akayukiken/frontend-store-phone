@@ -25,7 +25,6 @@ const { Header, Content } = Layout;
 
 const App = () => {
   const [mode, setMode] = useState("light");
-  const [collapsed, setCollapsed] = useState(false);
 
   // load mode dari localStorage
   useEffect(() => {
@@ -41,47 +40,50 @@ const App = () => {
     document.documentElement.className = newMode;
   };
 
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-  };
+  // 🧩 STATE sidebar dipindah ke dalam komponen layout agar tidak ikut re-render seluruh App
+  const DashboardLayout = () => {
+    const [collapsed, setCollapsed] = useState(false);
+    const toggleSidebar = () => setCollapsed(!collapsed);
 
-  const DashboardLayout = () => (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
-      <Layout>
-        <Header
-          style={{
-            padding: 0,
-            background: "#fff",
-            boxShadow: "0 2px 8px #f0f1f2",
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={toggleSidebar}
-            style={{ fontSize: "16px", marginLeft: "16px" }}
-          />
-        </Header>
-        <Content
-          style={{
-            margin: "16px",
-            padding: "16px",
-            background: "#fff",
-            minHeight: "280px",
-            overflowX: "auto",
-          }}
-        >
-          <Routes>
-            <Route path="/" element={<DashboardHome />} />
-            <Route path="products" element={<Products />} />
-            <Route path="products/create" element={<AddProduct />} />
-            <Route path="products/:id" element={<UpdateProduct />} />
-          </Routes>
-        </Content>
+    return (
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
+        <Layout>
+          <Header
+            style={{
+              padding: 0,
+              background: "#fff",
+              boxShadow: "0 2px 8px #f0f1f2",
+            }}
+          >
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={toggleSidebar}
+              style={{ fontSize: "16px", marginLeft: "16px" }}
+            />
+          </Header>
+
+          <Content
+            style={{
+              margin: "16px",
+              padding: "16px",
+              background: "#fff",
+              minHeight: "280px",
+              overflowX: "auto",
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<DashboardHome />} />
+              <Route path="products" element={<Products />} />
+              <Route path="products/create" element={<AddProduct />} />
+              <Route path="products/:id" element={<UpdateProduct />} />
+            </Routes>
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
-  );
+    );
+  };
 
   return (
     <>
@@ -147,7 +149,7 @@ const App = () => {
         {/* Auth Route */}
         <Route path="/signin" element={<Login />} />
 
-        {/* Admin Dashboard */}
+        {/* Dashboard Route */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard/*" element={<DashboardLayout />} />
         </Route>
