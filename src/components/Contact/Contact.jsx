@@ -105,7 +105,7 @@ const Contact = () => {
             <div className="flex items-center gap-3">
               <MdEmail className="text-xl" />
               <a
-                href="mailto:support@storephone.id"
+                href="https://one-page-portofolio-main.vercel.app/"
                 className="text-blue-600 hover:underline"
               >
                 support@storephone.id
@@ -115,12 +115,12 @@ const Contact = () => {
             <div className="flex items-center gap-3">
               <FaWhatsapp className="text-xl text-green-600" />
               <a
-                href="https://wa.me/6281234567890"
+                href="https://wa.me/6283838733755"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
               >
-                +62 812-3456-7890
+                +62 838-3873-3755
               </a>
             </div>
           </motion.div>
